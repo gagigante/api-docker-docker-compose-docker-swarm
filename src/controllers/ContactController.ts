@@ -20,7 +20,7 @@ export class ContactController {
 
     const getContactById = new GetContactByIdUseCase();
 
-    const contact = getContactById.execute(Number(id));
+    const contact = await getContactById.execute(Number(id));
 
     return response.json(contact);
   }
