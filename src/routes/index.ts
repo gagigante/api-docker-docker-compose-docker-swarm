@@ -1,9 +1,9 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
 
 import { contactRouter } from './contactRouter';
 
 const routes = Router();
 
-routes.use('contact', contactRouter)
+routes.use('/contacts', contactRouter)
 
 export { routes };

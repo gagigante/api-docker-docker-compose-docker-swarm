@@ -9,6 +9,16 @@ const contactRouter = Router();
 
 contactRouter.get('/', contactController.index);
 
+contactRouter.get(
+  '/:id', 
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number().required(),
+    },
+  }),
+  contactController.show
+);
+
 contactRouter.post(
   '/',  
   celebrate({
@@ -22,7 +32,7 @@ contactRouter.post(
 );
 
 contactRouter.put(
-  '/',  
+  '/:id',  
   celebrate({
     [Segments.PARAMS]: {
       id: Joi.number().required(),
@@ -37,7 +47,7 @@ contactRouter.put(
 );
 
 contactRouter.delete(
-  '/',
+  '/:id',
   celebrate({  
     [Segments.PARAMS]: {
       id: Joi.number().required(),
