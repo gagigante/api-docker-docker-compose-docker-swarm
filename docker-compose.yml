@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres
+    container_name: db-contact-list-app
+    restart: always
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=contact-list-app
+    volumes:
+      - pgdata:/data/postgres
+
+  cache:
+    image: redis:alpine
+    container_name: cache-contact-list-app
+    restart: always
+    ports: 
+      - 6379:6379
+
+  app:
+    build: .
+    container_name: api-contact-list-app
+    restart: always
+    ports: 
+      - 3333:3333
+      - 9229:9229
+    environment:
+      - DATABASE_USER=user
+      - DATABASE_PASS=pass
+      - DATABASE_HOST=db-contact-list-app
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=contact-list-app
+      - REDIS_HOST=cache-contact-list-app
+    volumes: 
+      - .:/usr/app
+    links: 
+      - database
+      - cache
+    depends_on:
+      - database
+      - cache
+
+volumes:
+  pgdata:
+    driver: local
