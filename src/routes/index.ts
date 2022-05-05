@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express';
 
+import { contactRouter } from './contactRouter';
+
 const routes = Router();
 
-routes.get('/', (request: Request, response: Response) => {
-  return response.json({ hello: 'world' });
-})
+routes.use('contact', contactRouter)
 
 export { routes };
