@@ -3,7 +3,6 @@ version: '3.8'
 services:
   database:
     image: postgres
-    container_name: db-contact-list-app
     restart: always
     ports: 
       - 5432:5432
@@ -13,36 +12,43 @@ services:
       - POSTGRES_DB=contact-list-app
     volumes:
       - pgdata:/data/postgres
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.hostname==node3
 
   cache:
     image: redis:alpine
-    container_name: cache-contact-list-app
     restart: always
     ports: 
       - 6379:6379
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.hostname==node4
 
   app:
-    build: .
-    container_name: api-contact-list-app
+    image: gagigante/tpe-app:latest
     restart: always
     ports: 
       - 3333:3333
-      - 9229:9229
     environment:
       - DATABASE_USER=user
       - DATABASE_PASS=pass
-      - DATABASE_HOST=db-contact-list-app
+      - DATABASE_HOST=database
       - DATABASE_PORT=5432
       - DATABASE_NAME=contact-list-app
-      - REDIS_HOST=cache-contact-list-app
+      - REDIS_HOST=cache
     volumes: 
-      - .:/usr/app
-    links: 
-      - database
-      - cache
+      - .:/usr/app  
     depends_on:
       - database
       - cache
+    deploy:
+      mode: replicated
+      replicas: 5
 
 volumes:
   pgdata:
